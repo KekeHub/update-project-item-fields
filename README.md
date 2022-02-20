@@ -5,6 +5,15 @@
 
 A GitHub Action that updates the project (`beta`) item fields easily.
 
+> Note that GitHub Projects are in beta phase and likely to have breaking changes
+
+This GitHub Actions supports all types of fields:
+
+* Text e.g. `Assignee`, `Comment`
+* Select Option e.g. `Status`
+* Date
+* Iterations
+
 ## Usage
 
 This is the basic usage.
@@ -19,6 +28,11 @@ steps:
       uses: KekeHub/update-project-item-fieldes@v1
       with:
         token: ${{ secrets.MY_GITHUB_TOKEN }}
+        fields: |
+          Status=In Progress
+          Iteration=Iteration 2
+          Date=2022/
+        project-id: 1
 ```
 
 Note that this can be used for either organization or user projects.
@@ -90,8 +104,40 @@ If any of these arguments are missing, the `${{ secrets.GITHUB_TOKEN }}` will ge
 | `app-integration-id`  | ID of the GiHub App a.k.a App ID                                                                            | `number` | `false`  |                       |
 | `app-private-key`     | Private key of the GitHub App.                                                                              | `string` | `false`  |                       |
 | `fields`              | Fields to update. Either line break seperated of comma seperated, please see details in the `Usage` Section | `string` | `true`   |                       |
+| `project-id`          | ID (Number) of the project e.g.) `1`                                                                        | `number` | `true`   |                       |
 | `project-item-id`     | ID of the project item. e.g.) `PNI_lADOBfaB-s4AA0lSzgAk718`                                                 | `string` | `true`   |                       |
 | `token`               | A GitHub token. If GitHub App arguments are configured, this argument will be ignored.                      | `string` | `false`  | `${{ github.token }}` |
+
+### Fields
+
+You can specify with new line or comma seperated.
+
+#### With New Line
+
+```yaml
+steps:
+    - name: Updates the Status field
+      uses: KekeHub/update-project-item-fieldes@v1
+      with:
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
+        fields: |
+          Status=In Progress
+          Iteration=Iteration 2
+          Date=2022/
+        project-id: 1
+```
+
+### With comma
+
+```yaml
+steps:
+    - name: Updates the Status field
+      uses: KekeHub/update-project-item-fieldes@v1
+      with:
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
+        fields: Status=In Progress,Iteration=Iteration 2,Date=2022/
+        project-id: 1
+```
 
 ## Outputs
 

@@ -89,6 +89,7 @@ export class Updater {
             core.debug(
               `Field name ${f.name} didn't match any of single_select fields`
             )
+            core.debug(`..=> Settings ${inspect(f.settings.options)}`)
             return f
           }
 

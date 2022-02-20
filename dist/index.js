@@ -157,6 +157,7 @@ class Updater {
                     const opt = f.settings.options.find(o => o.name === f.name);
                     if (!opt) {
                         core.debug(`Field name ${f.name} didn't match any of single_select fields`);
+                        core.debug(`..=> Settings ${(0, util_1.inspect)(f.settings.options)}`);
                         return f;
                     }
                     f.value = opt.id;

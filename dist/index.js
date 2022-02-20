@@ -136,7 +136,8 @@ class Updater {
               }
             }
           }
-    }`, {
+        }
+      }`, {
             projectId
         });
         /* eslint no-console: "off" */

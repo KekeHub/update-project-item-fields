@@ -56,7 +56,8 @@ export class Updater {
               }
             }
           }
-    }`,
+        }
+      }`,
       {
         projectId
       }

@@ -84,12 +84,18 @@ export class Updater {
 
       if (f.settings) {
         if (f.settings.options) {
-          const opt = f.settings.options.find(o => o.name === f.name)
+          const opt = f.settings.options.find(
+            o => o.name === this.config.fields[f.name]
+          )
           if (!opt) {
-            core.debug(
-              `Field name ${f.name} didn't match any of single_select fields`
-            )
             core.debug(`..=> Settings ${inspect(f.settings.options)}`)
+            core.setFailed(
+              `Field name ${
+                f.name
+              } didn't match any of single_select fields with value ${
+                this.config.fields[f.name]
+              }`
+            )
             return f
           }
 

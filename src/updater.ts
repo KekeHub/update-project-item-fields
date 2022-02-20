@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
-import { createAppAuth } from '@octokit/auth-app'
-import { graphql } from '@octokit/graphql'
+import {createAppAuth} from '@octokit/auth-app'
+import {graphql} from '@octokit/graphql'
+import {inspect} from 'util'
 
 export interface UpdaterConfig {
   app: {
@@ -51,7 +52,7 @@ export class Updater {
   }
 
   private async getProjectFields(projectId: string): Promise<Field[]> {
-    const { node } = await this.#github(
+    const {node} = await this.#github(
       `query ($projectId: ID!) {
         node(id: $projectId) {
           ... on ProjectNext {
@@ -95,7 +96,7 @@ export class Updater {
     owner: string,
     num: number
   ): Promise<string> {
-    const { organization } = await this.#github(
+    const {organization} = await this.#github(
       `query ($owner: String!, $number: Int!) {
         organization(login: $owner){
           projectNext(number: $number) {
@@ -114,7 +115,7 @@ export class Updater {
   }
 
   private async getUserProjectId(login: string, num: number): Promise<string> {
-    const { user } = await this.#github(
+    const {user} = await this.#github(
       `query ($owner: String!, $number: Int!) {
         user(login: $login){
           projectNext(number: $number) {
@@ -154,6 +155,12 @@ export class Updater {
         fieldId: field.id,
         value: field.value
       }
+    )
+
+    core.debug(
+      `Updated project field for ${inspect(field)} of project id ${
+        this.config.projectId
+      }`
     )
   }
 

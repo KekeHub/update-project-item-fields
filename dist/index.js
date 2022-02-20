@@ -102,6 +102,7 @@ exports.Updater = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const auth_app_1 = __nccwpck_require__(7541);
 const graphql_1 = __nccwpck_require__(8467);
+const util_1 = __nccwpck_require__(3837);
 class Updater {
     config;
     #github;
@@ -191,7 +192,7 @@ class Updater {
         return id;
     }
     async updateProjectField(field) {
-        await this.#github(`mutation(projectId: ID!, itemId: ID!, fieldId: ID!, value: String!) {
+        await this.#github(`mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) {
         updateProjectNextItemField(
           input: {
             projectId: $projectId
@@ -210,6 +211,7 @@ class Updater {
             fieldId: field.id,
             value: field.value
         });
+        core.debug(`Updated project field for ${(0, util_1.inspect)(field)} of project id ${this.config.projectId}`);
     }
     async updateProjectFields(fields) {
         await Promise.all(fields.map(async (f) => this.updateProjectField(f)));

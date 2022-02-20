@@ -1,5 +1,5 @@
-name: "assign-org-project"
-description: "Assigned issue or pull request to a organization project"
+name: "update-project-item-fields"
+description: "Updates the project item fields by project item ID"
 author: "KekeHub"
 inputs:
   app-installation-id:
@@ -14,6 +14,7 @@ inputs:
     required: false
     description: "GitHub App private key"
 
+<<<<<<< Updated upstream
   fields:
     required: false
     description: "Fields to update in Key value format"
@@ -23,22 +24,26 @@ inputs:
     description: "ID of the issue or the pull request"
     default: ${{ github.event.issue.node_id || github.event.pull_request.node_id }}
 
+=======
+>>>>>>> Stashed changes
   owner:
     required: false
     description: "Owner (organization ID) of the project owner"
     default: ${{ github.repository_owner }}
 
-  project-id:
+  project-item-id:
     required: true
-    description: "The ID of the organization ID"
+    description: "ID of the project item"
 
   token:
     required: false
     description: "Credential to access to the repo to post the comment"
     default: ${{ github.token }}
+
 runs:
   using: "node12"
   main: "dist/index.js"
+
 branding:
   icon: "archive"
   color: "orange"

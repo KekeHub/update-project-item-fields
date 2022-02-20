@@ -12,6 +12,7 @@ jobs:
           app-installation-id: ${{ secrets.KEKEHUB_BOT_INSTALLATION_ID }}
           app-integration-id: ${{ secrets.KEKEHUB_BOT_INTEGRATION_ID }}
           app-private-key: ${{ secrets.KEKEHUB_BOT_PRIVATE_KEY }}
-          project-id: 1
           fields: |
             Comment="Hello!"
+          project-id: 1
+          project-item-id: ${{ secrets.KEKE_HUB_TEST_PROJECT_ITEM_ID }}

@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 1530:
+/***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -26,11 +26,80 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Assiger = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const updater_1 = __nccwpck_require__(3045);
+function getFields() {
+    const rawLabels = core.getInput('fields', { required: true });
+    let lines;
+    if (rawLabels.includes('\n')) {
+        lines = rawLabels.split('\n').filter(l => l !== '');
+    }
+    else {
+        lines = rawLabels.split(',');
+    }
+    return lines.reduce((obj, l) => {
+        const [k, v] = l.split('=');
+        obj[k] = v;
+        return obj;
+    }, {});
+}
+async function run() {
+    try {
+        const config = {
+            app: {
+                appId: core.getInput('app-integration-id') || '',
+                installationId: core.getInput('app-installation-id') || '',
+                privateKey: core.getInput('app-private-key') || ''
+            },
+            fields: getFields(),
+            owner: core.getInput('owner', { required: true }),
+            projectId: parseInt(core.getInput('project-id', { required: true }), 10),
+            projectItemId: parseInt(core.getInput('project-item-id', { required: true }), 10),
+            token: core.getInput('token', { required: true })
+        };
+        const assigner = new updater_1.Updater(config);
+        await assigner.run();
+    }
+    catch (err) {
+        core.setFailed(err.message);
+        core.debug(err.stack);
+    }
+}
+run();
+
+
+/***/ }),
+
+/***/ 3045:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Updater = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const auth_app_1 = __nccwpck_require__(7541);
 const graphql_1 = __nccwpck_require__(8467);
-class Assiger {
+class Updater {
     config;
     #github;
     constructor(config) {
@@ -55,18 +124,14 @@ class Assiger {
             });
         }
     }
-    async assignProject(project, contentId) {
-        const { addProjectNextItem } = await this.#github(`mutation ($project: ID!, $contentId: ID!) {
-        addProjectNextItem(input: {projectId: $project, contentId: $contentId}){
-          projectNextItem {
-            id
-          }
+    async getProjectId(owner, num) {
+        try {
+            return await this.getOrganizationProjectId(owner, num);
         }
-    }`, {
-            project,
-            contentId
-        });
-        return addProjectNextItem.projectNextItem.id;
+        catch (e) {
+            core.debug("Couldn't find organization project, looking for user project");
+            return await this.getUserProjectId(owner, num);
+        }
     }
     async getOrganizationProjectId(owner, num) {
         const { organization } = await this.#github(`query ($owner: String!, $number: Int!) {
@@ -97,73 +162,12 @@ class Assiger {
         return id;
     }
     async run() {
-        let projectNodeId;
-        try {
-            projectNodeId = await this.getOrganizationProjectId(this.config.owner, this.config.projectId);
-            core.debug(`Found organization project ${projectNodeId}, skipping user project lookup`);
-        }
-        catch (e) {
-            core.debug("Couldn't find organization project, looking for user project");
-            projectNodeId = await this.getUserProjectId(this.config.owner, this.config.projectId);
-        }
-        const itemId = await this.assignProject(projectNodeId, this.config.issueId);
-        core.setOutput('project-item-id', itemId);
+        const projectNodeId = await this.getProjectId(this.config.owner, this.config.projectId);
+        /* eslint no-console: "off" */
+        console.log(projectNodeId);
     }
 }
-exports.Assiger = Assiger;
-
-
-/***/ }),
-
-/***/ 3109:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-const assigner_1 = __nccwpck_require__(1530);
-async function run() {
-    try {
-        const config = {
-            app: {
-                appId: core.getInput('app-integration-id') || '',
-                installationId: core.getInput('app-installation-id') || '',
-                privateKey: core.getInput('app-private-key') || ''
-            },
-            issueId: core.getInput('issue-id'),
-            owner: core.getInput('owner', { required: true }),
-            projectId: parseInt(core.getInput('project-id', { required: true }), 10),
-            token: core.getInput('token', { required: true })
-        };
-        const assigner = new assigner_1.Assiger(config);
-        await assigner.run();
-    }
-    catch (err) {
-        core.setFailed(err.message);
-        core.debug(err.stack);
-    }
-}
-run();
+exports.Updater = Updater;
 
 
 /***/ }),

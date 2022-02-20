@@ -1,9 +1,9 @@
-# Auto Assign Project
+# Update Project Item Fields
 [![CI][CI]][CI-status]
 [![GitHub Marketplace][MarketPlace]][MarketPlace-status]
 [![Mergify Status][mergify-status]][mergify]
 
-A GitHub Action that assignes an issue or a pull requests to a organization or user project (currently `beta`).
+A GitHub Action that updates the project (`beta`) item fields easily.
 
 ## Usage
 
@@ -15,8 +15,8 @@ on:
   pull_request: [opened]
 
 steps:
-    - name: Assign issue to organization project
-      uses: KekeHub/auto-assign-project@v1
+    - name: Updates the Status field
+      uses: KekeHub/update-project-item-fieldes@v1
       with:
         token: ${{ secrets.MY_GITHUB_TOKEN }}
 ```
@@ -45,13 +45,14 @@ steps:
     - name: Assign issue to organization project
       uses: KekeHub/auto-assign-project@v1
       with:
-        token: ${{ secrets.MY_GITHUB_TOKEN }}
+        fields: |
+          Status="In Progress"
+          Text="Hello!"
 ```
 
 💡 Note that GitHub App described in the next sections has granular permissions and it's strongly recommended.
 
 </details>
-
 
 <details><summary>GitHub App</summary>
 
@@ -83,21 +84,18 @@ If any of these arguments are missing, the `${{ secrets.GITHUB_TOKEN }}` will ge
 
 ## Inputs
 
-| NAME                  | DESCRIPTION                                                                            | TYPE     | REQUIRED | DEFAULT                                                                           |
-|-----------------------|----------------------------------------------------------------------------------------|----------|----------|-----------------------------------------------------------------------------------|
-| `app-installation-id` | ID of the GitHub App installation to your organization.                                | `number` | `false`  |                                                                                   |
-| `app-integration-id`  | ID of the GiHub App a.k.a App ID                                                       | `number` | `false`  |                                                                                   |
-| `app-private-key`     | Private key of the GitHub App.                                                         | `string` | `false`  |                                                                                   |
-| `issue-id`            | ID  of the issue.                                                                      | `string` | `true`   | `${{ github.event.issue.node_id }}` or `${{ github.event.pull_request.node_id }}` |
-| `owner`               | Organization or the user e.g. `KekeHub`                                                | `string` | `false`  | The workflows GitHub organization                                                 |
-| `token`               | A GitHub token. If GitHub App arguments are configured, this argument will be ignored. | `string` | `false`  | `${{ github.token }}`                                                             |
-| `project-id`          | ID of the project. e.g.) `1`                                                           | `number` | `true`   |                                                                                   |
+| NAME                  | DESCRIPTION                                                                                                 | TYPE     | REQUIRED | DEFAULT               |
+|-----------------------|-------------------------------------------------------------------------------------------------------------|----------|----------|-----------------------|
+| `app-installation-id` | ID of the GitHub App installation to your organization.                                                     | `number` | `false`  |                       |
+| `app-integration-id`  | ID of the GiHub App a.k.a App ID                                                                            | `number` | `false`  |                       |
+| `app-private-key`     | Private key of the GitHub App.                                                                              | `string` | `false`  |                       |
+| `fields`              | Fields to update. Either line break seperated of comma seperated, please see details in the `Usage` Section | `string` | `true`   |                       |
+| `project-item-id`     | ID of the project item. e.g.) `PNI_lADOBfaB-s4AA0lSzgAk718`                                                 | `string` | `true`   |                       |
+| `token`               | A GitHub token. If GitHub App arguments are configured, this argument will be ignored.                      | `string` | `false`  | `${{ github.token }}` |
 
 ## Outputs
 
-| NAME              | DESCRIPTION                                                                                                                  | TYPE     |
-|-------------------|------------------------------------------------------------------------------------------------------------------------------|----------|
-| `project-item-id` | ID of the item (issue or pull request) that was added to the project. Useful for later use if you want to update the fields. | `string` |
+None.
 
 ## License
 

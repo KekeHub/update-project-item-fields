@@ -14,18 +14,10 @@ inputs:
     required: false
     description: "GitHub App private key"
 
-<<<<<<< Updated upstream
   fields:
     required: false
     description: "Fields to update in Key value format"
 
-  issue-id:
-    required: false
-    description: "ID of the issue or the pull request"
-    default: ${{ github.event.issue.node_id || github.event.pull_request.node_id }}
-
-=======
->>>>>>> Stashed changes
   owner:
     required: false
     description: "Owner (organization ID) of the project owner"

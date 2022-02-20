@@ -23,6 +23,10 @@ inputs:
     description: "Owner (organization ID) of the project owner"
     default: ${{ github.repository_owner }}
 
+  project-id:
+    required: true
+    description: "ID(Number) of the project"
+
   project-item-id:
     required: true
     description: "ID of the project item"

@@ -33,6 +33,7 @@ steps:
           Iteration=Iteration 2
           Date=2022/02/11
         project-id: 1
+        project-item-id: PNI_lADOBfaB-s4AA0lSzgAk718
 ```
 
 Note that this can be used for either organization or user projects.
@@ -142,6 +143,42 @@ steps:
 ## Outputs
 
 None.
+
+## Use cases
+
+### Assign an issue or a pull request to organization project
+
+By using [KekeHub/auto-assign-project](https://github.com/KekeHub/auto-assign-project), whenever a issue or a pull request is created, you can assign to a project and update the fields.
+
+```yml
+name: Assign to project when issue or pull request is created
+on:
+  issues: [opened]
+  pull_request: [opened]
+
+steps:
+    - name: Assign to project
+      uses: KeisukeYamashita/auto-assign-project@v1
+      id: assign-project
+      with: 
+        app-integration-id: ${{ secrets.MYBOT_INTEGRATION_ID }}
+        app-installation-id: ${{ secrets.MYBOT_INSTALLATION_ID }}
+        app-private-key: ${{ secrets.MYBOT_PRIVATE_KEY }}
+        project-id: 1
+
+    - name: Updates the Status field
+      uses: KekeHub/update-project-item-fieldes@v1
+      with:
+        app-integration-id: ${{ secrets.MYBOT_INTEGRATION_ID }}
+        app-installation-id: ${{ secrets.MYBOT_INSTALLATION_ID }}
+        app-private-key: ${{ secrets.MYBOT_PRIVATE_KEY }}
+        fields: |
+          Status=In Progress
+          Iteration=Iteration 2
+          Date=2022/02/11
+        project-id: 1
+        project-item-id: ${{ steps.assign-project.outputs.project-item-id }}
+```
 
 ## License
 

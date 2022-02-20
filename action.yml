@@ -14,6 +14,10 @@ inputs:
     required: false
     description: "GitHub App private key"
 
+  fields:
+    required: false
+    description: "Fields to update in Key value format"
+
   issue-id:
     required: false
     description: "ID of the issue or the pull request"

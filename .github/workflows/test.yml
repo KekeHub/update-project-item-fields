@@ -13,6 +13,6 @@ jobs:
           app-integration-id: ${{ secrets.KEKEHUB_BOT_INTEGRATION_ID }}
           app-private-key: ${{ secrets.KEKEHUB_BOT_PRIVATE_KEY }}
           fields: |
-            Comment="Hello!"
+            Comment=Hello!
           project-id: 1
           project-item-id: ${{ secrets.KEKEHUB_TEST_PROJECT_ITEM_ID }}

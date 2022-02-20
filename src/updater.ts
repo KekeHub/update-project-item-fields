@@ -45,7 +45,7 @@ export class Updater {
 
   private async getProjectFields(projectId: string): Promise<string> {
     const {node} = await this.#github(
-      `query ($projectId: String!) {
+      `query ($projectId: ID!) {
         node(id: $projectId) {
           ... on ProjectNext {
             fields(first: 20) {

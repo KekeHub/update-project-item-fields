@@ -125,7 +125,7 @@ class Updater {
         }
     }
     async getProjectFields(projectId) {
-        const { node } = await this.#github(`query ($projectId: String!) {
+        const { node } = await this.#github(`query ($projectId: ID!) {
         node(id: $projectId) {
           ... on ProjectNext {
             fields(first: 20) {

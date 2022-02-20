@@ -133,11 +133,14 @@ export class Updater {
     return id
   }
 
-  private async updateProjectField(field: Field): Promise<void> {
+  private async updateProjectField(
+    projectNodeId: string,
+    field: Field
+  ): Promise<void> {
     core.debug(
-      `Update project field for ${inspect(field)}, projectId ${
-        this.config.projectId
-      }, itemId: ${this.config.projectItemId}`
+      `Update project field for ${inspect(
+        field
+      )}, projectId ${projectNodeId}, itemId: ${this.config.projectItemId}`
     )
 
     await this.#github(
@@ -156,7 +159,7 @@ export class Updater {
         }
       }`,
       {
-        projectId: this.config.projectId,
+        projectId: projectNodeId,
         itemId: this.config.projectItemId,
         fieldId: field.id,
         value: field.value
@@ -164,8 +167,13 @@ export class Updater {
     )
   }
 
-  private async updateProjectFields(fields: Field[]): Promise<void> {
-    await Promise.all(fields.map(async f => this.updateProjectField(f)))
+  private async updateProjectFields(
+    projectNodeId: string,
+    fields: Field[]
+  ): Promise<void> {
+    await Promise.all(
+      fields.map(async f => this.updateProjectField(projectNodeId, f))
+    )
   }
 
   async run(): Promise<void> {
@@ -175,6 +183,9 @@ export class Updater {
     )
 
     const fields = await this.getProjectFields(projectNodeId)
-    await this.updateProjectFields(fields.filter(f => f.value))
+    await this.updateProjectFields(
+      projectNodeId,
+      fields.filter(f => f.value)
+    )
   }
 }

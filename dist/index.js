@@ -191,8 +191,8 @@ class Updater {
         const id = user.projectNext.id;
         return id;
     }
-    async updateProjectField(field) {
-        core.debug(`Update project field for ${(0, util_1.inspect)(field)}, projectId ${this.config.projectId}, itemId: ${this.config.projectItemId}`);
+    async updateProjectField(projectNodeId, field) {
+        core.debug(`Update project field for ${(0, util_1.inspect)(field)}, projectId ${projectNodeId}, itemId: ${this.config.projectItemId}`);
         await this.#github(`mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) {
         updateProjectNextItemField(
           input: {
@@ -207,19 +207,19 @@ class Updater {
           }
         }
       }`, {
-            projectId: this.config.projectId,
+            projectId: projectNodeId,
             itemId: this.config.projectItemId,
             fieldId: field.id,
             value: field.value
         });
     }
-    async updateProjectFields(fields) {
-        await Promise.all(fields.map(async (f) => this.updateProjectField(f)));
+    async updateProjectFields(projectNodeId, fields) {
+        await Promise.all(fields.map(async (f) => this.updateProjectField(projectNodeId, f)));
     }
     async run() {
         const projectNodeId = await this.getProjectId(this.config.owner, this.config.projectId);
         const fields = await this.getProjectFields(projectNodeId);
-        await this.updateProjectFields(fields.filter(f => f.value));
+        await this.updateProjectFields(projectNodeId, fields.filter(f => f.value));
     }
 }
 exports.Updater = Updater;

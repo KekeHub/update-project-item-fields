@@ -15,4 +15,4 @@ jobs:
           fields: |
             Comment="Hello!"
           project-id: 1
-          project-item-id: ${{ secrets.KEKE_HUB_TEST_PROJECT_ITEM_ID }}
+          project-item-id: ${{ secrets.KEKEHUB_TEST_PROJECT_ITEM_ID }}

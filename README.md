@@ -31,7 +31,7 @@ steps:
         fields: |
           Status=In Progress
           Iteration=Iteration 2
-          Date=2022/
+          Date=2022/02/11
         project-id: 1
 ```
 
@@ -123,7 +123,7 @@ steps:
         fields: |
           Status=In Progress
           Iteration=Iteration 2
-          Date=2022/
+          Date=2022/02/11
         project-id: 1
 ```
 
@@ -135,7 +135,7 @@ steps:
       uses: KekeHub/update-project-item-fieldes@v1
       with:
         token: ${{ secrets.MY_GITHUB_TOKEN }}
-        fields: Status=In Progress,Iteration=Iteration 2,Date=2022/
+        fields: Status=In Progress,Iteration=Iteration 2,Date=2022/02/11
         project-id: 1
 ```
 

@@ -1,5 +1,20 @@
-export type Settings = SingleSelect
+export type Settings = SingleSelect & IterationSelect
 
+export interface IterationSelect {
+  configuration: {
+    duration: number
+    start_day: number
+    iterations: Iteration[]
+  }
+}
+
+export interface Iteration {
+  id: string
+  title: string
+  duration: number
+  start_date: string
+  title_html: string
+}
 export interface SingleSelect {
   options: SingleSelectOption[]
 }

@@ -13,6 +13,8 @@ jobs:
           app-integration-id: ${{ secrets.KEKEHUB_BOT_INTEGRATION_ID }}
           app-private-key: ${{ secrets.KEKEHUB_BOT_PRIVATE_KEY }}
           fields: |
+            Iteration=Iteration 1
+            Date=2022/02/22
             Status=In Progress
             Comment=Hello!
           project-id: 1

@@ -157,15 +157,24 @@ class Updater {
                     const opt = f.settings.options.find(o => o.name === this.config.fields[f.name]);
                     if (!opt) {
                         core.debug(`..=> Settings ${(0, util_1.inspect)(f.settings.options)}`);
-                        core.setFailed(`Field name ${f.name} didn't match any of single_select fields with value ${this.config.fields[f.name]}`);
+                        core.setFailed(`Field name ${f.name} value ${this.config.fields[f.name]} didn't match any of options, available options are ${f.settings.options.map(o => o.name)}`);
                         return f;
                     }
                     f.value = opt.id;
+                    return f;
                 }
-                else {
-                    f.value = this.config.fields[f.name];
+                if (f.settings.configuration) {
+                    const itr = f.settings.configuration.iterations.find(i => i.title === this.config.fields[f.name]);
+                    if (!itr) {
+                        core.debug(`..=> Configurations ${(0, util_1.inspect)(f.settings.configuration)}`);
+                        core.setFailed(`Field name ${f.name} value ${this.config.fields[f.name]} didn't match any of options, available options are ${f.settings.configuration.iterations.map(i => i.title)}`);
+                        return f;
+                    }
+                    f.value = itr.id;
+                    return f;
                 }
             }
+            f.value = this.config.fields[f.name];
             return f;
         });
     }

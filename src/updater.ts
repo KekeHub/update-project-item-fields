@@ -87,24 +87,50 @@ export class Updater {
           const opt = f.settings.options.find(
             o => o.name === this.config.fields[f.name]
           )
+
           if (!opt) {
             core.debug(`..=> Settings ${inspect(f.settings.options)}`)
             core.setFailed(
-              `Field name ${
-                f.name
-              } didn't match any of single_select fields with value ${
+              `Field name ${f.name} value ${
                 this.config.fields[f.name]
-              }`
+              } didn't match any of options, available options are ${f.settings.options.map(
+                o => o.name
+              )}`
             )
+
             return f
           }
 
           f.value = opt.id
-        } else {
-          f.value = this.config.fields[f.name]
+          return f
+        }
+
+        if (f.settings.configuration) {
+          const itr = f.settings.configuration.iterations.find(
+            i => i.title === this.config.fields[f.name]
+          )
+
+          if (!itr) {
+            core.debug(
+              `..=> Configurations ${inspect(f.settings.configuration)}`
+            )
+            core.setFailed(
+              `Field name ${f.name} value ${
+                this.config.fields[f.name]
+              } didn't match any of options, available options are ${f.settings.configuration.iterations.map(
+                i => i.title
+              )}`
+            )
+
+            return f
+          }
+
+          f.value = itr.id
+          return f
         }
       }
 
+      f.value = this.config.fields[f.name]
       return f
     }) as Field[]
   }

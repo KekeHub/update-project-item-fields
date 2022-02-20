@@ -43,6 +43,30 @@ export class Updater {
     }
   }
 
+  private async getProjectFields(projectId: string): Promise<string> {
+    const {node} = await this.#github(
+      `query ($projectId: String!) {
+        node(id: $projectId) {
+          ... on ProjectNext {
+            fields(first: 20) {
+              nodes {
+                id
+                name
+                settings
+              }
+            }
+          }
+    }`,
+      {
+        projectId
+      }
+    )
+
+    /* eslint no-console: "off" */
+    console.log(node)
+    return ''
+  }
+
   private async getProjectId(owner: string, num: number): Promise<string> {
     try {
       return await this.getOrganizationProjectId(owner, num)
@@ -99,7 +123,6 @@ export class Updater {
       this.config.projectId
     )
 
-    /* eslint no-console: "off" */
-    console.log(projectNodeId)
+    await this.getProjectFields(projectNodeId)
   }
 }

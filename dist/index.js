@@ -124,6 +124,25 @@ class Updater {
             });
         }
     }
+    async getProjectFields(projectId) {
+        const { node } = await this.#github(`query ($projectId: String!) {
+        node(id: $projectId) {
+          ... on ProjectNext {
+            fields(first: 20) {
+              nodes {
+                id
+                name
+                settings
+              }
+            }
+          }
+    }`, {
+            projectId
+        });
+        /* eslint no-console: "off" */
+        console.log(node);
+        return '';
+    }
     async getProjectId(owner, num) {
         try {
             return await this.getOrganizationProjectId(owner, num);
@@ -163,8 +182,7 @@ class Updater {
     }
     async run() {
         const projectNodeId = await this.getProjectId(this.config.owner, this.config.projectId);
-        /* eslint no-console: "off" */
-        console.log(projectNodeId);
+        await this.getProjectFields(projectNodeId);
     }
 }
 exports.Updater = Updater;

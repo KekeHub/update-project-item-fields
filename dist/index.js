@@ -192,6 +192,7 @@ class Updater {
         return id;
     }
     async updateProjectField(field) {
+        core.debug(`Update project field for ${(0, util_1.inspect)(field)}, projectId ${this.config.projectId}, itemId: ${this.config.projectItemId}`);
         await this.#github(`mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) {
         updateProjectNextItemField(
           input: {
@@ -211,7 +212,6 @@ class Updater {
             fieldId: field.id,
             value: field.value
         });
-        core.debug(`Updated project field for ${(0, util_1.inspect)(field)} of project id ${this.config.projectId}`);
     }
     async updateProjectFields(fields) {
         await Promise.all(fields.map(async (f) => this.updateProjectField(f)));

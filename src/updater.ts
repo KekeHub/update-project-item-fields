@@ -134,6 +134,12 @@ export class Updater {
   }
 
   private async updateProjectField(field: Field): Promise<void> {
+    core.debug(
+      `Update project field for ${inspect(field)}, projectId ${
+        this.config.projectId
+      }, itemId: ${this.config.projectItemId}`
+    )
+
     await this.#github(
       `mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: String!) {
         updateProjectNextItemField(
@@ -155,12 +161,6 @@ export class Updater {
         fieldId: field.id,
         value: field.value
       }
-    )
-
-    core.debug(
-      `Updated project field for ${inspect(field)} of project id ${
-        this.config.projectId
-      }`
     )
   }
 

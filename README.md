@@ -110,7 +110,7 @@ If any of these arguments are missing, the `${{ secrets.GITHUB_TOKEN }}` will ge
 
 ### Fields
 
-You can specify with new line or comma seperated.
+You can specify with new line or comma separated.
 
 #### With New Line
 
@@ -127,7 +127,7 @@ steps:
         project-id: 1
 ```
 
-### With comma
+#### With comma
 
 ```yaml
 steps:

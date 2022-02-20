@@ -13,7 +13,7 @@ export interface UpdaterConfig {
   fields: Record<string, any>
   owner: string
   projectId: number
-  projectItemId: number
+  projectItemId: string
   token: string
 }
 

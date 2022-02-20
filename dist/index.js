@@ -55,7 +55,7 @@ async function run() {
             fields: getFields(),
             owner: core.getInput('owner', { required: true }),
             projectId: parseInt(core.getInput('project-id', { required: true }), 10),
-            projectItemId: parseInt(core.getInput('project-item-id', { required: true }), 10),
+            projectItemId: core.getInput('project-item-id', { required: true }),
             token: core.getInput('token', { required: true })
         };
         core.debug('Fields');

@@ -28,6 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const updater_1 = __nccwpck_require__(3045);
+const util_1 = __nccwpck_require__(3837);
 function getFields() {
     const rawLabels = core.getInput('fields', { required: true });
     let lines;
@@ -57,6 +58,8 @@ async function run() {
             projectItemId: parseInt(core.getInput('project-item-id', { required: true }), 10),
             token: core.getInput('token', { required: true })
         };
+        core.debug('Fields');
+        core.debug((0, util_1.inspect)(config.fields));
         const assigner = new updater_1.Updater(config);
         await assigner.run();
     }
@@ -140,9 +143,15 @@ class Updater {
       }`, {
             projectId
         });
-        /* eslint no-console: "off" */
-        console.log(node);
-        return '';
+        return node.fields.nodes.map((n) => {
+            const f = {
+                id: n.id,
+                name: n.name,
+                settings: n.settings === 'null' ? undefined : JSON.parse(n.settings)
+            };
+            f.value = this.config.fields[f.name];
+            return f;
+        });
     }
     async getProjectId(owner, num) {
         try {
@@ -181,9 +190,34 @@ class Updater {
         const id = user.projectNext.id;
         return id;
     }
+    async updateProjectField(field) {
+        await this.#github(`mutation(projectId: ID!, itemId: ID!, fieldId: ID!, value: String!) {
+        updateProjectNextItemField(
+          input: {
+            projectId: $projectId
+            itemId: $itemId
+            fieldId: $fieldId
+            value: $value
+          }
+        ) {
+          projectNextItem {
+            id
+          }
+        }
+      }`, {
+            projectId: this.config.projectId,
+            itemId: this.config.projectItemId,
+            fieldId: field.id,
+            value: field.value
+        });
+    }
+    async updateProjectFields(fields) {
+        await Promise.all(fields.map(async (f) => this.updateProjectField(f)));
+    }
     async run() {
         const projectNodeId = await this.getProjectId(this.config.owner, this.config.projectId);
-        await this.getProjectFields(projectNodeId);
+        const fields = await this.getProjectFields(projectNodeId);
+        await this.updateProjectFields(fields.filter(f => f.value));
     }
 }
 exports.Updater = Updater;

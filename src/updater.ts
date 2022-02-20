@@ -16,6 +16,13 @@ export interface UpdaterConfig {
   token: string
 }
 
+interface Field {
+  id: string
+  name: string
+  settings?: Record<string, any>
+  value: any | undefined
+}
+
 export class Updater {
   #github
 
@@ -43,7 +50,7 @@ export class Updater {
     }
   }
 
-  private async getProjectFields(projectId: string): Promise<string> {
+  private async getProjectFields(projectId: string): Promise<Field[]> {
     const {node} = await this.#github(
       `query ($projectId: ID!) {
         node(id: $projectId) {
@@ -63,9 +70,16 @@ export class Updater {
       }
     )
 
-    /* eslint no-console: "off" */
-    console.log(node)
-    return ''
+    return node.fields.nodes.map((n: any) => {
+      const f = {
+        id: n.id,
+        name: n.name,
+        settings: n.settings === 'null' ? undefined : JSON.parse(n.settings)
+      } as Field
+
+      f.value = this.config.fields[f.name]
+      return f
+    }) as Field[]
   }
 
   private async getProjectId(owner: string, num: number): Promise<string> {
@@ -118,12 +132,42 @@ export class Updater {
     return id
   }
 
+  private async updateProjectField(field: Field): Promise<void> {
+    await this.#github(
+      `mutation(projectId: ID!, itemId: ID!, fieldId: ID!, value: String!) {
+        updateProjectNextItemField(
+          input: {
+            projectId: $projectId
+            itemId: $itemId
+            fieldId: $fieldId
+            value: $value
+          }
+        ) {
+          projectNextItem {
+            id
+          }
+        }
+      }`,
+      {
+        projectId: this.config.projectId,
+        itemId: this.config.projectItemId,
+        fieldId: field.id,
+        value: field.value
+      }
+    )
+  }
+
+  private async updateProjectFields(fields: Field[]): Promise<void> {
+    await Promise.all(fields.map(async f => this.updateProjectField(f)))
+  }
+
   async run(): Promise<void> {
     const projectNodeId = await this.getProjectId(
       this.config.owner,
       this.config.projectId
     )
 
-    await this.getProjectFields(projectNodeId)
+    const fields = await this.getProjectFields(projectNodeId)
+    await this.updateProjectFields(fields.filter(f => f.value))
   }
 }

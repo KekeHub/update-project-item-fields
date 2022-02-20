@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import {Updater, UpdaterConfig} from './updater'
+import {inspect} from 'util'
 
 function getFields(): Record<string, any> {
   const rawLabels = core.getInput('fields', {required: true})
@@ -34,6 +35,9 @@ async function run(): Promise<void> {
       ),
       token: core.getInput('token', {required: true})
     }
+
+    core.debug('Fields')
+    core.debug(inspect(config.fields))
 
     const assigner = new Updater(config)
     await assigner.run()

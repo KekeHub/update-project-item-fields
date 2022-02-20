@@ -148,9 +148,23 @@ class Updater {
             const f = {
                 id: n.id,
                 name: n.name,
-                settings: n.settings === 'null' ? undefined : JSON.parse(n.settings)
+                settings: n.settings === 'null'
+                    ? undefined
+                    : JSON.parse(n.settings)
             };
-            f.value = this.config.fields[f.name];
+            if (f.settings) {
+                if (f.settings.options) {
+                    const opt = f.settings.options.find(o => o.name === f.name);
+                    if (!opt) {
+                        core.debug(`Field name ${f.name} didn't match any of single_select fields`);
+                        return f;
+                    }
+                    f.value = opt.id;
+                }
+                else {
+                    f.value = this.config.fields[f.name];
+                }
+            }
             return f;
         });
     }

@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import {Settings} from './settings'
 import {createAppAuth} from '@octokit/auth-app'
 import {graphql} from '@octokit/graphql'
 import {inspect} from 'util'
@@ -20,7 +21,7 @@ export interface UpdaterConfig {
 interface Field {
   id: string
   name: string
-  settings?: Record<string, any>
+  settings?: Settings
   value: any | undefined
 }
 
@@ -75,10 +76,28 @@ export class Updater {
       const f = {
         id: n.id,
         name: n.name,
-        settings: n.settings === 'null' ? undefined : JSON.parse(n.settings)
+        settings:
+          n.settings === 'null'
+            ? undefined
+            : (JSON.parse(n.settings) as Settings)
       } as Field
 
-      f.value = this.config.fields[f.name]
+      if (f.settings) {
+        if (f.settings.options) {
+          const opt = f.settings.options.find(o => o.name === f.name)
+          if (!opt) {
+            core.debug(
+              `Field name ${f.name} didn't match any of single_select fields`
+            )
+            return f
+          }
+
+          f.value = opt.id
+        } else {
+          f.value = this.config.fields[f.name]
+        }
+      }
+
       return f
     }) as Field[]
   }

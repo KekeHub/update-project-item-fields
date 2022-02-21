@@ -157,7 +157,7 @@ class Updater {
                     const opt = f.settings.options.find(o => o.name === this.config.fields[f.name]);
                     if (!opt) {
                         core.debug(`..=> Settings ${(0, util_1.inspect)(f.settings.options)}`);
-                        core.setFailed(`Field name ${f.name} value ${this.config.fields[f.name]} didn't match any of options, available options are ${f.settings.options.map(o => o.name)}`);
+                        core.warning(`Field name ${f.name} value ${this.config.fields[f.name]} didn't match any of options, available options are ${f.settings.options.map(o => o.name)}`);
                         return f;
                     }
                     f.value = opt.id;

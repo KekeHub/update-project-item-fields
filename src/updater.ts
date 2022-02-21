@@ -90,7 +90,7 @@ export class Updater {
 
           if (!opt) {
             core.debug(`..=> Settings ${inspect(f.settings.options)}`)
-            core.setFailed(
+            core.warning(
               `Field name ${f.name} value ${
                 this.config.fields[f.name]
               } didn't match any of options, available options are ${f.settings.options.map(

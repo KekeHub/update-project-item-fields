@@ -180,6 +180,11 @@ steps:
         project-item-id: ${{ steps.assign-project.outputs.project-item-id }}
 ```
 
+## Related Actions
+
+* [KekeHub/auto-assign-project](https://github.com/KekeHub/auto-assign-project)
+  * GitHub Action to assign an issue or a pull request to a project
+
 ## License
 
 [MIT](LICENSE)

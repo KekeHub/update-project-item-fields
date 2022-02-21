@@ -167,7 +167,7 @@ steps:
         project-id: 1
 
     - name: Updates the Status field
-      uses: KekeHub/update-project-item-fieldes@v1
+      uses: KekeHub/update-project-item-fields@v1
       with:
         app-integration-id: ${{ secrets.MYBOT_INTEGRATION_ID }}
         app-installation-id: ${{ secrets.MYBOT_INSTALLATION_ID }}
